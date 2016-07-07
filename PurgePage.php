@@ -10,11 +10,11 @@ class PurgePage {
 
 	public static function registerParserFunction( \Parser &$parser ) {
 
-		$parser->setFunctionHook( 'purge', function ( $parser ) {
+		$parser->setFunctionHook( 'purge', function () {
 
 			$params = func_get_args();
 
-			if ( isset( $params[ 0 ] ) && isset( $params[ 1 ] ) ) {
+			if ( isset( $params[ 1 ] ) ) {
 
 				$pageName = $params[ 1 ];
 
