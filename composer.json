@@ -1,0 +1,36 @@
+{
+	"name"       : "mediawiki/purge-page",
+	"type"       : "mediawiki-extension",
+	"description": "Provides the #purge parser function",
+	"keywords"   : [
+		"wiki",
+		"MediaWiki",
+		"extension"
+	],
+	"homepage"   : "https://www.mediawiki.org/wiki/Extension:PurgePage",
+	"license"    : "GPL-2.0+",
+	"authors"    : [
+		{
+			"name" : "Stephan Gambke",
+			"email": "s7eph4n@gmail.com",
+			"role" : "Developer"
+		}
+	],
+	"support": {
+		"wiki": "https://www.mediawiki.org/wiki/Extension:PurgePage",
+		"forum": "https://www.mediawiki.org/wiki/Extension_talk:PurgePage",
+		"source": "https://github.com/s7eph4n/PurgePage",
+		"issues": "https://github.com/s7eph4n/PurgePage/issues",
+		"irc": "irc://irc.freenode.org/mediawiki"
+	},
+	"require"    : {
+		"php"    : ">=5.4",
+		"composer/installers": ">1.0.12"
+	},
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+
+        }
+    }
+}

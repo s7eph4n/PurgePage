@@ -1,0 +1,24 @@
+{
+	"name": "PurgePage",
+	"version": "1.0.0",
+	"author": [
+		"[https://www.mediawiki.org/wiki/User:F.trott Stephan Gambke]"
+	],
+	"url": "https://www.mediawiki.org/wiki/Extension:PurgePage",
+	"description": "Provides the #purge parser function",
+	"license-name": "GPL-2.0+",
+	"type": "parserhook",
+	"requires": {
+		"MediaWiki": "~1.26"
+	},
+	"AutoloadClasses": {
+		"PurgePage\\PurgePage": "PurgePage.php"
+	},
+	"Hooks": {
+		"ParserFirstCallInit": [
+			"PurgePage\\PurgePage::registerParserFunction"
+		]
+	},
+	"callback": "PurgePage\\PurgePage::init",
+	"manifest_version": 1
+}
