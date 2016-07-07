@@ -5,9 +5,9 @@ namespace PurgePage;
 class PurgePage {
 
 	public static function init() {
-		$GLOBALS['wgExtensionMessagesFiles']['PurgePageMagic'] = __DIR__ . '/PurgePage.magic.php';
+		$GLOBALS[ 'wgExtensionMessagesFiles' ][ 'PurgePageMagic' ] = __DIR__ . '/PurgePage.magic.php';
 	}
-	
+
 	public static function registerParserFunction( \Parser &$parser ) {
 
 		$parser->setFunctionHook( 'purge', function ( $parser ) {
@@ -15,15 +15,19 @@ class PurgePage {
 			$params = func_get_args();
 
 			if ( isset( $params[ 0 ] ) && isset( $params[ 1 ] ) ) {
+
 				$pageName = $params[ 1 ];
-			}
 
-			$title = \Title::newFromText( $pageName );
+				$title = \Title::newFromText( $pageName );
 
-			if ( $title->isContentPage() && $title->exists() ) {
-				\WikiPage::factory( $title )->doPurge();
+				if ( $title->isContentPage() && $title->exists() ) {
+					\WikiPage::factory( $title )->doPurge();
+				}
+
 			}
 
 		} );
+
+		return true;
 	}
 }
