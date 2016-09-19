@@ -2,10 +2,13 @@
 
 namespace PurgePage;
 
+use PoolWorkArticleView;
+
 class PurgePage {
 
 	public static function init() {
 		$GLOBALS[ 'wgExtensionMessagesFiles' ][ 'PurgePageMagic' ] = __DIR__ . '/PurgePage.magic.php';
+		$GLOBALS[ 'wgJobClasses' ][ 'parsePage' ] = 'PurgePage\\PageParseJob';
 	}
 
 	public static function registerParserFunction( \Parser &$parser ) {
@@ -16,13 +19,13 @@ class PurgePage {
 
 			if ( isset( $params[ 1 ] ) ) {
 
+				$parser = $params[ 0 ];
 				$pageName = $params[ 1 ];
 
 				$title = \Title::newFromText( $pageName );
+				$job = \Job::factory( 'parsePage', $title, [ 'parseroptions' => $parser->getOptions() ] );
 
-				if ( $title->isContentPage() && $title->exists() ) {
-					\WikiPage::factory( $title )->doPurge();
-				}
+				\JobQueueGroup::singleton()->lazyPush( [ $job ] );
 
 			}
 
