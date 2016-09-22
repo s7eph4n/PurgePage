@@ -2,7 +2,9 @@
 
 namespace PurgePage;
 
-use PoolWorkArticleView;
+use Job;
+use JobQueueGroup;
+use Title;
 
 class PurgePage {
 
@@ -22,10 +24,15 @@ class PurgePage {
 				$parser = $params[ 0 ];
 				$pageName = $params[ 1 ];
 
-				$title = \Title::newFromText( $pageName );
-				$job = \Job::factory( 'parsePage', $title, [ 'parseroptions' => $parser->getOptions() ] );
+				$title = Title::newFromText( $pageName );
 
-				\JobQueueGroup::singleton()->lazyPush( [ $job ] );
+				if ( $title !== null && $title->isContentPage() && $title->exists() ) {
+					/** @var \ParserOptions $parserOptions */
+					$parserOptions = $parser->getOptions();
+					$job           = Job::factory( 'parsePage', $title, [ 'user' => $parserOptions->getUser(), 'lang' => $parserOptions->getUserLang() ] );
+					JobQueueGroup::singleton()->lazyPush( $job );
+				}
+
 
 			}
 

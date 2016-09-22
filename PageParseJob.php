@@ -25,10 +25,11 @@
 namespace PurgePage;
 
 use Job;
-use Parser;
+use Language;
 use ParserOptions;
 use PoolWorkArticleView;
 use Title;
+use WikiPage;
 
 /**
  * Class PageParseJob
@@ -38,7 +39,8 @@ use Title;
  */
 class PageParseJob extends Job {
 
-	private $mParserOptions;
+	private $user;
+	private $language;
 
 	/**
 	 * Callers should use DuplicateJob::newFromJob() instead
@@ -47,9 +49,10 @@ class PageParseJob extends Job {
 	 * @param array $params Job parameters
 	 */
 	public function __construct( Title $title, array $params ) {
-		parent::__construct( 'pageParse', $title, $params );
+		parent::__construct( 'parsePage', $title, $params );
 
-		$this->mParserOptions = isset( $params[ 'parseroptions' ] ) ? $params[ 'parseroptions' ] : new ParserOptions();
+		$this->user = isset( $params[ 'user' ] ) ? $params[ 'user' ] : null;
+		$this->language = isset( $params[ 'lang' ] ) ? Language::factory( $params[ 'lang' ] ) : null;
 
 		// this does NOT protect against recursion, it only discards duplicate
 		// calls to {{#purge}} on the same page
@@ -64,10 +67,12 @@ class PageParseJob extends Job {
 
 		$title = $this->getTitle();
 
-		if ( $title->isContentPage() && $title->exists() ) {
+		if ( $title !== null && $title->isContentPage() && $title->exists() ) {
 
-			$wikiPage = \WikiPage::factory( $title );
-			$pool = new PoolWorkArticleView( $wikiPage, $this->mParserOptions, $wikiPage->getLatest(), false );
+			$wikiPage = WikiPage::factory( $title );
+			$parserOptions = new ParserOptions( $this->user, $this->language );
+
+			$pool = new PoolWorkArticleView( $wikiPage, $parserOptions, $wikiPage->getLatest(), false );
 			$pool->execute();
 		}
 
